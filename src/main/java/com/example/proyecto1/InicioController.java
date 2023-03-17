@@ -17,16 +17,16 @@ public class InicioController {
     public ChoiceBox dificultadChoice;
     ObservableList<String> dificultades = FXCollections.observableArrayList("Dummy", "Advanced");
 
-    /*
-    @FXML
-    public void initialize() {dificultadChoice.setItems(dificultades);}
-*/
+
+
     @FXML
     private void iniciarJuego () throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("GameView.fxml"));
         Parent root = loader.load();
 
         GameController controlador = loader.getController();
+        Cronometro c= new Cronometro();
+        c.start();
 
         Scene scene = new Scene(root);
         Stage stage = new Stage();
@@ -34,7 +34,7 @@ public class InicioController {
         stage.setScene(scene);
         stage.showAndWait();
 
-
-
     }
+    @FXML
+    public void initialize() {dificultadChoice.setItems(dificultades);}
 }
