@@ -1,6 +1,10 @@
 package com.example.proyecto1;
 
+
+import static com.example.proyecto1.GameController.timer;
+
 public class Cronometro extends Thread{
+    static String tiempo;
     public Cronometro(){
         super();
     }
@@ -24,8 +28,9 @@ public class Cronometro extends Thread{
                         seg = 0;
                     }
                 }
-                System.out.println(hora+":"+min+":"+seg);
-                sleep(999);
+                tiempo= hora+":"+min+":"+seg;
+                System.out.println(tiempo);
+                sleep(999); /**Duerme el hilo casi un segundo para que sea un conteo de tiempo real*/
             }
         }catch (Exception ex){
             System.out.println(ex.getMessage());

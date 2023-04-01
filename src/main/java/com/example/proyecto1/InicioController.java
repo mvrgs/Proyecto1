@@ -25,6 +25,7 @@ public class InicioController {
         Parent root = loader.load();
 
         GameController controlador = loader.getController();
+
         Cronometro c= new Cronometro();
         c.start();
 
@@ -33,6 +34,7 @@ public class InicioController {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.showAndWait();
+
 
     }
     @FXML
