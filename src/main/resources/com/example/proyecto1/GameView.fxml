@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="397.0" prefWidth="344.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyecto1.GameController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="397.0" prefWidth="344.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyecto1.GameController">
    <children>
-      <Button layoutX="35.0" layoutY="91.0" mnemonicParsing="false" onAction="#iniciarTimer" prefHeight="33.0" prefWidth="33.0" />
-      <Button layoutX="69.0" layoutY="91.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="33.0" />
+      <Button layoutX="35.0" layoutY="91.0" mnemonicParsing="false" onMouseClicked="#ponerBandera" prefHeight="33.0" prefWidth="33.0">
+         <graphic>
+            <ImageView fx:id="bandera" fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true" visible="false">
+               <image>
+                  <Image url="@../../../../../../red%20flag.jpg" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+
+      <Button layoutX="69.0" layoutY="91.0" mnemonicParsing="false" onMouseClicked="#ponerBandera" prefHeight="33.0" prefWidth="33.0">
+         <graphic>
+            <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true" visible="false">
+               <image>
+                  <Image url="@../../../../../../red%20flag.jpg" />
+               </image>
+            </ImageView>
+         </graphic></Button>
       <Button layoutX="273.0" layoutY="91.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="33.0" />
       <Button layoutX="239.0" layoutY="91.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="33.0" />
       <Button layoutX="205.0" layoutY="91.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="33.0" />

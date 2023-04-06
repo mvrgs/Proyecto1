@@ -2,7 +2,10 @@ package com.example.proyecto1;
 
 import java.util.LinkedList;
 import java.util.List;
-    public class Tablero {
+
+
+
+public class Tablero {
         Casilla[][] casillas;
         int numFilas;
         int numColumnas;
@@ -111,6 +114,7 @@ import java.util.List;
             }
             return listaCasillas;
         }
+
 
 
         public static void main(String[] args) {

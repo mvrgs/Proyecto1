@@ -1,8 +1,5 @@
 package com.example.proyecto1;
 
-
-import static com.example.proyecto1.GameController.timer;
-
 public class Cronometro extends Thread{
     static String tiempo;
     public Cronometro(){
