@@ -36,8 +36,9 @@ public class InicioController {
 
         else {
             /**Inicia la ventana de juego sobre la de inicio*/
-            Cronometro c = new Cronometro();
+            /*Cronometro c = new Cronometro();
             c.start();
+             */
             crearTablero();
             colocarTablero();
         }

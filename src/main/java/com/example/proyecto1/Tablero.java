@@ -48,6 +48,7 @@ public class Tablero {
                 }
                 System.out.println("");
             }
+            System.out.print(casillas[0][1].isMina() ? "Mina" : "Libre");
         }
 
         private void printPistas() {
@@ -114,6 +115,8 @@ public class Tablero {
             }
             return listaCasillas;
         }
+
+
 
 
 

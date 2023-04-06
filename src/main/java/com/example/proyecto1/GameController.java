@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -11,6 +12,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 import static com.example.proyecto1.Cronometro.tiempo;
 
@@ -50,6 +53,14 @@ public class GameController {
             for (int col = 0; col < size; col++) {
                 Button button = new Button();
                 button.setPrefSize(40, 40);
+                button.setId(row + "," + col);
+
+                button.setOnAction(actionEvent -> {
+                    String[] coordenada = button.getId().split(",");
+                    int posFila = Integer.parseInt(coordenada[0]);
+                    int posColumna = Integer.parseInt(coordenada[1]);
+                });
+
 
                 buttons[row][col] = button;
                 grid.add(button, col, row);
@@ -65,14 +76,12 @@ public class GameController {
         System.out.println("Si es el derecho :)");
     }
 
-
-
-
-
-
-
-
-
+    static void showMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
 
 }
