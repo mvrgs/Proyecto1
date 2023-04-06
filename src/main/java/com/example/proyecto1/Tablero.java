@@ -2,7 +2,7 @@ package com.example.proyecto1;
 
 import java.util.LinkedList;
 import java.util.List;
-
+import java.util.function.Consumer;
 
 
 public class Tablero {
@@ -10,6 +10,9 @@ public class Tablero {
         int numFilas;
         int numColumnas;
         int numMinas;
+        int numCasillasAbiertas;
+        private Consumer<List<Casilla>> eventLoseGame;
+        private Consumer<Casilla> eventCasillaAbierta;
 
         public Tablero(int numFilas, int numColumnas, int numMinas) {
             this.numFilas = numFilas;
@@ -115,12 +118,41 @@ public class Tablero {
             }
             return listaCasillas;
         }
+        public void selectCasilla(int posFila, int posColunma){
+            eventCasillaAbierta.accept(this.casillas[posFila][posColunma]);
+            if (this.casillas[posFila][posColunma].isMina()){
+                List<Casilla> casillasConMinas = new LinkedList<>();
+                for (int i = 0; i < casillas.length; i++) {
+                    for (int j = 0; j < casillas[i].length; j++) {
+                        if (casillas[i][j].isMina()) {
+                            casillasConMinas.add(casillas[i][j]);
+                        }
+                    }
+                }
+                eventLoseGame.accept(casillasConMinas);
+            } else if (this.casillas[posFila][posColunma].getNumMinasAlrededor()==0){
+                List<Casilla> casillasAlrededor = obtenerCasillasAlrededor(posFila, posColunma);
+                for (Casilla casilla: casillasAlrededor){
+                    if (!casilla.isAbierta()){
+                        casilla.setAbierta(true);
+                        selectCasilla(casilla.getNumFila(),casilla.getNumColumna());
+                    }
+                }
+                
+            }
+        }
 
 
 
+    public void setEventLoseGame(Consumer<List<Casilla>> eventLoseGame) {
+        this.eventLoseGame = eventLoseGame;
+    }
 
+    public void setEventCasillaAbierta(Consumer<Casilla> eventCasillaAbierta) {
+        this.eventCasillaAbierta = eventCasillaAbierta;
+    }
 
-        public static void main(String[] args) {
+    public static void main(String[] args) {
             Tablero tablero = new Tablero(8, 8, 5);
             tablero.printTablero();
             System.out.println("---");

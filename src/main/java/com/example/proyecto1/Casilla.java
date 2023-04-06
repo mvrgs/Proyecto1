@@ -5,6 +5,7 @@ public class Casilla {
     private int numColumna;
     private boolean mina;
     private int numMinasAlrededor;
+    private boolean abierta;
 
     public Casilla(int numFila, int numColumna) {
         this.numFila = numFila;
@@ -47,7 +48,11 @@ public class Casilla {
         this.numMinasAlrededor++;
     }
 
+    public boolean isAbierta() {
+        return abierta;
+    }
 
-
-
+    public void setAbierta(boolean abierta) {
+        this.abierta = abierta;
+    }
 }

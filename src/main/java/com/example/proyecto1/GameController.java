@@ -14,6 +14,8 @@ import javafx.stage.Stage;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
+import java.util.function.Consumer;
 
 import static com.example.proyecto1.Cronometro.tiempo;
 
@@ -39,6 +41,23 @@ public class GameController {
     static void crearTablero(){
         tablero = new Tablero(8, 8, numMinas);
         tablero.printTablero();
+        tablero.setEventLoseGame(new Consumer<List<Casilla>>() {
+            @Override
+            public void accept(List<Casilla> t) {
+                for (Casilla casillaConMina : t){
+                    buttons[casillaConMina.getNumFila()][casillaConMina.getNumColumna()].setText("*");
+
+                }
+            }
+        });
+        tablero.setEventCasillaAbierta(new Consumer<Casilla>() {
+            @Override
+            public void accept(Casilla t) {
+                buttons[t.getNumFila()][t.getNumColumna()].setDisable(true);
+                buttons[t.getNumFila()][t.getNumColumna()].setText(t.getNumMinasAlrededor()+"");
+            }
+        });
+
     }
 
     static void colocarTablero(){
@@ -59,6 +78,8 @@ public class GameController {
                     String[] coordenada = button.getId().split(",");
                     int posFila = Integer.parseInt(coordenada[0]);
                     int posColumna = Integer.parseInt(coordenada[1]);
+                    tablero.selectCasilla(posFila,posColumna);
+
                 });
 
 
