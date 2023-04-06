@@ -25,14 +25,13 @@ public class GameController {
     static int size = 8;
     static int numMinas= 5;
     static Tablero tablero;
-
     @FXML
     static Label timer;
     @FXML
     ImageView bandera;
-    static boolean gameOver;
-    static boolean gameWon;
-    static boolean[][] mines;
+
+
+
 
     public void iniciarTimer() {
         timer.setText(tiempo);
@@ -50,11 +49,20 @@ public class GameController {
                 }
             }
         });
+        tablero.setEventWinGame(new Consumer<List<Casilla>>() {
+            @Override
+            public void accept(List<Casilla> t) {
+                for (Casilla casillaConMina : t){
+                    buttons[casillaConMina.getNumFila()][casillaConMina.getNumColumna()].setText(":)");
+
+                }
+            }
+        });
         tablero.setEventCasillaAbierta(new Consumer<Casilla>() {
             @Override
             public void accept(Casilla t) {
                 buttons[t.getNumFila()][t.getNumColumna()].setDisable(true);
-                buttons[t.getNumFila()][t.getNumColumna()].setText(t.getNumMinasAlrededor()+"");
+                buttons[t.getNumFila()][t.getNumColumna()].setText(t.getNumMinasAlrededor()==0 ? "": t.getNumMinasAlrededor() +"");
             }
         });
 
@@ -91,10 +99,6 @@ public class GameController {
         Scene scene = new Scene(new StackPane(grid), size * 40, size * 40);
         stage.setScene(scene);
         stage.show();
-    }
-    public void ponerBandera(){
-        bandera.setVisible(true);
-        System.out.println("Si es el derecho :)");
     }
 
     static void showMessage(String message) {

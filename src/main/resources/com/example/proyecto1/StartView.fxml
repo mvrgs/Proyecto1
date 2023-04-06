@@ -19,5 +19,10 @@
          </font>
       </Button>
       <ChoiceBox fx:id="dificultadChoice" layoutX="93.0" layoutY="200.0" prefWidth="150.0" style="-fx-background-color: #acacac;" />
+      <Label fx:id="errorLabel" layoutX="83.0" layoutY="261.0" prefHeight="14.0" prefWidth="171.0" text="Debe seleccionar la dificultad " textFill="#acacac" visible="false">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

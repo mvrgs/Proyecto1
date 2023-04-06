@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
@@ -21,6 +22,8 @@ import static com.example.proyecto1.GameController.*;
 
 public class InicioController {
     @FXML
+    private Label errorLabel;
+    @FXML
     public ChoiceBox dificultadChoice;
     ObservableList<String> dificultades = FXCollections.observableArrayList("Dummy", "Advanced");
 
@@ -31,7 +34,7 @@ public class InicioController {
         /*** Verifica que se haya seleccionado una dificultad*/
         if(dificultadChoice.getValue() == null){
             /*** Verifica que se haya seleccionado una dificultad*/
-            System.out.println("Error");
+            errorLabel.setVisible(true);
         }
 
         else {
@@ -39,10 +42,10 @@ public class InicioController {
             /*Cronometro c = new Cronometro();
             c.start();
              */
+            errorLabel.setVisible(false);
             crearTablero();
             colocarTablero();
         }
-
     }
 
 
