@@ -13,6 +13,7 @@ public class InicioController {
     private Label errorLabel;
     @FXML
     public ChoiceBox dificultadChoice;
+    static String dificultad;
     ObservableList<String> dificultades = FXCollections.observableArrayList("Dummy", "Advanced");
 
 
@@ -27,10 +28,12 @@ public class InicioController {
 
         else {
             /**Inicia la ventana de juego sobre la de inicio*/
+            dificultad = (dificultadChoice.getValue().toString());
             errorLabel.setVisible(false);
             crearTablero();
             colocarTablero();
             iniciarCronometro();
+            computadora();
         }
     }
 

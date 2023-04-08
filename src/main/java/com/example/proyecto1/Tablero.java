@@ -4,6 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static com.example.proyecto1.GameController.actualizarMinasMarcadas;
+import static com.example.proyecto1.GameController.deComputador;
+
 
 public class Tablero {
         Casilla[][] casillas;
@@ -11,6 +14,7 @@ public class Tablero {
         int numColumnas;
         int numMinas;
         int numCasillasAbiertas;
+        int minasEncontradas = 0;
         boolean juegoTerminado;
         private Consumer<List<Casilla>> eventLoseGame;
         private Consumer<Casilla> eventCasillaAbierta;
@@ -53,7 +57,6 @@ public class Tablero {
                 }
                 System.out.println("");
             }
-            System.out.print(casillas[0][1].isMina() ? "Mina" : "Libre");
         }
 
         private void printPistas() {
@@ -132,13 +135,14 @@ public class Tablero {
             }
             return casillasConMinas;
         }
-        public void selectCasilla(int posFila, int posColunma){
-            eventCasillaAbierta.accept(this.casillas[posFila][posColunma]);
-            if (this.casillas[posFila][posColunma].isMina()){
+        public void selectCasilla(int posFila, int posColumna){
+
+            eventCasillaAbierta.accept(this.casillas[posFila][posColumna]);
+            if (this.casillas[posFila][posColumna].isMina()){
                 eventLoseGame.accept(obtenerCasillasConMinas());
-            } else if (this.casillas[posFila][posColunma].getNumMinasAlrededor()==0){
-                marcarCasillaAbierta(posFila, posColunma);
-                List<Casilla> casillasAlrededor = obtenerCasillasAlrededor(posFila, posColunma);
+            } else if (this.casillas[posFila][posColumna].getNumMinasAlrededor()==0){
+                marcarCasillaAbierta(posFila, posColumna);
+                List<Casilla> casillasAlrededor = obtenerCasillasAlrededor(posFila, posColumna);
                 for (Casilla casilla: casillasAlrededor){
                     if (!casilla.isAbierta()){
                         selectCasilla(casilla.getNumFila(),casilla.getNumColumna());
@@ -146,11 +150,19 @@ public class Tablero {
                 }
             }
             else {
-                marcarCasillaAbierta(posFila, posColunma);
+                marcarCasillaAbierta(posFila, posColumna);
             }
             if (partidaGanada()){
                 eventWinGame.accept(obtenerCasillasConMinas());
 
+            }
+        }
+
+        public void marcarCasilla(int posFila, int posColumna){
+            if (this.casillas[posFila][posColumna].isMina()){
+               minasEncontradas++;
+                System.out.println(minasEncontradas);
+                actualizarMinasMarcadas(minasEncontradas);
             }
         }
 
