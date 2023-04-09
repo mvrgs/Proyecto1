@@ -3,19 +3,16 @@ package com.example.proyecto1;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
-
 import static com.example.proyecto1.GameController.actualizarMinasMarcadas;
-import static com.example.proyecto1.GameController.deComputador;
-
 
 public class Tablero {
-        Casilla[][] casillas;
+        static Casilla[][] casillas;
         int numFilas;
         int numColumnas;
         int numMinas;
         int numCasillasAbiertas;
         int minasEncontradas = 0;
-        boolean juegoTerminado;
+        static boolean juegoTerminado = false;
         private Consumer<List<Casilla>> eventLoseGame;
         private Consumer<Casilla> eventCasillaAbierta;
         private Consumer<List<Casilla>> eventWinGame;
@@ -136,10 +133,10 @@ public class Tablero {
             return casillasConMinas;
         }
         public void selectCasilla(int posFila, int posColumna){
-
             eventCasillaAbierta.accept(this.casillas[posFila][posColumna]);
             if (this.casillas[posFila][posColumna].isMina()){
                 eventLoseGame.accept(obtenerCasillasConMinas());
+                juegoTerminado = true;
             } else if (this.casillas[posFila][posColumna].getNumMinasAlrededor()==0){
                 marcarCasillaAbierta(posFila, posColumna);
                 List<Casilla> casillasAlrededor = obtenerCasillasAlrededor(posFila, posColumna);
@@ -161,16 +158,16 @@ public class Tablero {
         public void marcarCasilla(int posFila, int posColumna){
             if (this.casillas[posFila][posColumna].isMina()){
                minasEncontradas++;
-                System.out.println(minasEncontradas);
-                actualizarMinasMarcadas(minasEncontradas);
+               System.out.println(minasEncontradas);
+               actualizarMinasMarcadas(minasEncontradas);
             }
         }
 
 
 
 
-    boolean partidaGanada(){
-            return numCasillasAbiertas >= (numFilas*numColumnas)-numMinas;
+
+    boolean partidaGanada(){return numCasillasAbiertas >= (numFilas*numColumnas)-numMinas;
     }
 
     void marcarCasillaAbierta(int posFila, int posColumna){

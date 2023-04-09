@@ -33,7 +33,6 @@ public class InicioController {
             crearTablero();
             colocarTablero();
             iniciarCronometro();
-            computadora();
         }
     }
 

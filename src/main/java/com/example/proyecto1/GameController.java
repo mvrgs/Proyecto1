@@ -18,25 +18,31 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
 import static com.example.proyecto1.InicioController.dificultad;
+import static com.example.proyecto1.Tablero.casillas;
 
 
 public class GameController {
 
     static Button[][] buttons;
     static int size = 8;
-    static int numMinas= 5;
+    static int numMinas= 15;
     static Tablero tablero;
     private static final SimpleIntegerProperty minutos = new SimpleIntegerProperty(0);
     private static final SimpleIntegerProperty segundos = new SimpleIntegerProperty(0);
     private static StringProperty minasMarcadas = new SimpleStringProperty("0");
     private static Timeline timeline;
-    private static boolean turnoUsuario;
-    static boolean deComputador = false;
+    public static LinkedList<Casilla> listaGeneral;
+    static boolean turnoJugador =true;
+    static boolean perdioComputadora = false;
+    static int largo;
+
 
 
 
@@ -51,8 +57,9 @@ public class GameController {
             public void accept(List<Casilla> t) {
                 for (Casilla casillaConMina : t){
                     buttons[casillaConMina.getNumFila()][casillaConMina.getNumColumna()].setText("*");
-
                 }
+                showMessage("Ha explotado una mina :(");
+                System.exit(0);
             }
         });
         tablero.setEventWinGame(new Consumer<List<Casilla>>() {
@@ -60,8 +67,9 @@ public class GameController {
             public void accept(List<Casilla> t) {
                 for (Casilla casillaConMina : t){
                     buttons[casillaConMina.getNumFila()][casillaConMina.getNumColumna()].setText(":)");
-
                 }
+                showMessage("Felicidades, ha ganado :)");
+                System.exit(0);
             }
         });
         tablero.setEventCasillaAbierta(new Consumer<Casilla>() {
@@ -76,7 +84,6 @@ public class GameController {
 
     static void colocarTablero(){
         Stage stage = new Stage();
-        turnoUsuario= true;
         Label labelCronometro = new Label();
         labelCronometro.textProperty().bind(Bindings.createStringBinding(() -> String.format("%02d:%02d", minutos.get(), segundos.get()), minutos, segundos));
         labelCronometro.setStyle("-fx-font-size: 37px;");
@@ -101,37 +108,20 @@ public class GameController {
                 button.setId(row + "," + col);
 
                 button.setOnAction(actionEvent -> {
-                            String[] coordenada = button.getId().split(",");
-                            int posFila = Integer.parseInt(coordenada[0]);
-                            int posColumna = Integer.parseInt(coordenada[1]);
-                            tablero.selectCasilla(posFila, posColumna);
+                    turnoJugador= false;
+                    String[] coordenada = button.getId().split(",");
+                    int posFila = Integer.parseInt(coordenada[0]);
+                    int posColumna = Integer.parseInt(coordenada[1]);
+                    tablero.selectCasilla(posFila, posColumna);
 
-                            turnoUsuario = false;
-                            grid.setDisable(true);
-                            Random ranFila = new Random();
-                            Random ranCol = new Random();
-                            new Thread(() -> {
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                int fila = ranFila.nextInt(8);
-                                int columna = ranCol.nextInt(8);
-                                Platform.runLater(() -> {
-                                    deComputador = true;
-                                    tablero.selectCasilla(fila, columna);
-                                    System.out.println("Funciona :)");
-                                });
-                                try {
-                                    Thread.sleep(1000);
-                                }catch (InterruptedException e){
-                                    e.printStackTrace();
-                                }
-                                deComputador = false;
-                                grid.setDisable(false);
-                            }).start();
-                        });
+                    if (dificultad == "Dummy"){
+                        dummy();
+                    }
+                    else{
+                        advanced();
+                    }
+                });
+
                 /**
                  * Metodo que cambia el color del boton con el click derecho para marcar una posible mina"
                  */
@@ -151,14 +141,65 @@ public class GameController {
         stage.show();
     }
 
-    static void computadora(){
-        if (dificultad == "Dummy"){
-            System.out.println("Dummy");
-        }
-        else{
-            System.out.println("Advanced");
-        }
+    private static void dummy(){
+        Random ranFila = new Random();
+        Random ranCol = new Random();
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            int fila = ranFila.nextInt(8);
+            int columna = ranCol.nextInt(8);
+            Platform.runLater(() -> {
+                tablero.selectCasilla(fila, columna);
+                System.out.println("El computador ya hizo su turno");
+                buttons[fila][columna].setStyle("-fx-background-color: blue;");
+            });
+        }).start();
+    }
 
+    static public void obtenerListaGeneral() {
+        listaGeneral = new LinkedList<>();
+        largo = 0;
+        for (int i = 0; i < casillas.length; i++) {
+            for (int j = 0; j < casillas[i].length; j++) {
+                if (!casillas[i][j].isAbierta()) {
+                    Casilla casilla = new Casilla(i,j);
+                    listaGeneral.add(casilla);
+                    largo++;
+                }
+            }
+        }
+        System.out.println(largo);
+    }
+
+    static void advanced() {
+        obtenerListaGeneral();
+        Random ranIndex = new Random();
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            int index = ranIndex.nextInt(largo);
+            int posFila;
+            int posCol;
+            posFila= listaGeneral.get(index).getNumFila();
+            posCol = listaGeneral.get(index).getNumColumna();
+            Platform.runLater(() -> {
+                buttons[posFila][posCol].setStyle("-fx-background-color: blue;");
+                System.out.println("indice:"+index);
+                System.out.println("fila:"+posFila);
+                System.out.println("columna"+posCol);
+                tablero.selectCasilla(posFila,posCol);
+            });
+        }).start();
+        if (tablero.juegoTerminado){
+            perdioComputadora= true;
+        }
     }
 
     static void iniciarCronometro() {
