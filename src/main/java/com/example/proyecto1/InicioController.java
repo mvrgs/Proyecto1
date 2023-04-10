@@ -6,9 +6,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 
+import java.io.IOException;
+
 import static com.example.proyecto1.GameController.*;
 
 public class InicioController {
+
+    private serialComm serialComm = new serialComm();
     @FXML
     private Label errorLabel;
     @FXML
@@ -19,7 +23,7 @@ public class InicioController {
 
 
     @FXML
-    private void iniciarJuego () {
+    private void iniciarJuego () throws IOException {
         /*** Verifica que se haya seleccionado una dificultad*/
         if(dificultadChoice.getValue() == null){
             /*** Verifica que se haya seleccionado una dificultad*/

@@ -3,6 +3,7 @@ module com.example.proyecto1 {
     requires javafx.fxml;
     requires com.fazecast.jSerialComm;
     requires java.desktop;
+    requires jssc;
 
 
     opens com.example.proyecto1 to javafx.fxml;

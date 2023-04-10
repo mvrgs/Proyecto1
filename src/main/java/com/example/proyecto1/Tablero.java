@@ -13,6 +13,7 @@ public class Tablero {
         int numCasillasAbiertas;
         int minasEncontradas = 0;
         static boolean juegoTerminado = false;
+        static List<Casilla> casillasConMinas;
         private Consumer<List<Casilla>> eventLoseGame;
         private Consumer<Casilla> eventCasillaAbierta;
         private Consumer<List<Casilla>> eventWinGame;
@@ -121,8 +122,8 @@ public class Tablero {
             return listaCasillas;
         }
 
-        List<Casilla> obtenerCasillasConMinas(){
-            List<Casilla> casillasConMinas = new LinkedList<>();
+       List<Casilla> obtenerCasillasConMinas(){
+            casillasConMinas = new LinkedList<>();
             for (int i = 0; i < casillas.length; i++) {
                 for (int j = 0; j < casillas[i].length; j++) {
                     if (casillas[i][j].isMina()) {
@@ -132,7 +133,10 @@ public class Tablero {
             }
             return casillasConMinas;
         }
+
         public void selectCasilla(int posFila, int posColumna){
+            obtenerCasillasConMinas();
+            System.out.println("conMinas:"+casillasConMinas);
             eventCasillaAbierta.accept(this.casillas[posFila][posColumna]);
             if (this.casillas[posFila][posColumna].isMina()){
                 eventLoseGame.accept(obtenerCasillasConMinas());

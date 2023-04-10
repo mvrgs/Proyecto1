@@ -44,7 +44,7 @@ public class Casilla {
         this.numMinasAlrededor = numMinasAlrededor;
     }
 
-    public void incrementarNumMinasAlrededor(){
+    public void incrementarNumMinasAlrededor() {
         this.numMinasAlrededor++;
     }
 

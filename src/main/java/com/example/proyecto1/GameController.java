@@ -19,6 +19,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -26,19 +27,23 @@ import java.util.function.Consumer;
 
 import static com.example.proyecto1.InicioController.dificultad;
 import static com.example.proyecto1.Tablero.casillas;
+import static com.example.proyecto1.Tablero.casillasConMinas;
 
 
 public class GameController {
 
     static Button[][] buttons;
     static int size = 8;
-    static int numMinas= 15;
+    static int numMinas= 5;
     static Tablero tablero;
     private static final SimpleIntegerProperty minutos = new SimpleIntegerProperty(0);
     private static final SimpleIntegerProperty segundos = new SimpleIntegerProperty(0);
     private static StringProperty minasMarcadas = new SimpleStringProperty("0");
     private static Timeline timeline;
-    public static LinkedList<Casilla> listaGeneral;
+    private static LinkedList<Casilla> listaGeneral;
+    private static LinkedList<Casilla> listaSegura;
+    private static LinkedList<Casilla> listaIncertidumbre;
+
     static boolean turnoJugador =true;
     static boolean perdioComputadora = false;
     static int largo;
@@ -82,9 +87,10 @@ public class GameController {
 
     }
 
-    static void colocarTablero(){
+    static void colocarTablero() throws IOException {
         Stage stage = new Stage();
         Label labelCronometro = new Label();
+
         labelCronometro.textProperty().bind(Bindings.createStringBinding(() -> String.format("%02d:%02d", minutos.get(), segundos.get()), minutos, segundos));
         labelCronometro.setStyle("-fx-font-size: 37px;");
 
@@ -97,6 +103,7 @@ public class GameController {
         grid.setPadding(new Insets(10));
         grid.setAlignment(Pos.CENTER);
         stage.setTitle("Minesweeper");
+
 
         grid.add(labelCronometro, 0, 0, size, 1);
         grid.add(labelMinas, size-1, 0);
@@ -153,14 +160,14 @@ public class GameController {
             int fila = ranFila.nextInt(8);
             int columna = ranCol.nextInt(8);
             Platform.runLater(() -> {
+                buttons[fila][columna].setStyle("-fx-background-color: blue;");
                 tablero.selectCasilla(fila, columna);
                 System.out.println("El computador ya hizo su turno");
-                buttons[fila][columna].setStyle("-fx-background-color: blue;");
             });
         }).start();
     }
 
-    static public void obtenerListaGeneral() {
+    static private void obtenerListaGeneral() {
         listaGeneral = new LinkedList<>();
         largo = 0;
         for (int i = 0; i < casillas.length; i++) {
@@ -172,7 +179,23 @@ public class GameController {
                 }
             }
         }
-        System.out.println(largo);
+        System.out.println("Cantidad disponibles:"+ largo);
+        obtenerListas();
+    }
+    static private void obtenerListas(){
+        listaSegura = new LinkedList<>();
+        listaIncertidumbre = new LinkedList<>();
+        for (Casilla casilla : listaGeneral ){
+            if (!casillasConMinas.contains(casilla)){
+                listaSegura.add(casilla);
+            }
+            else {
+                listaIncertidumbre.add(casilla);
+            }
+        }
+        System.out.println("general:"+listaGeneral.size());
+        System.out.println("segura:"+listaSegura.size());
+        System.out.println("incertidumbre:"+listaIncertidumbre.size());
     }
 
     static void advanced() {
