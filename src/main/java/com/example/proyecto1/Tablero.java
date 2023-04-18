@@ -184,6 +184,11 @@ public class Tablero {
             actualizarMinasMarcadas(minasEncontradas);
         }
     }
+
+
+
+
+
     boolean partidaGanada(){return numCasillasAbiertas >= (numFilas*numColumnas)-numMinas;
     }
 

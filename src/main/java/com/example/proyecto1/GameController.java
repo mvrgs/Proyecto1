@@ -29,7 +29,6 @@ import static com.example.proyecto1.Tablero.*;
 
 
 public class GameController {
-
     static Button[][] buttons;
     static int size = 8;
     static int numMinas= 5;
@@ -51,10 +50,6 @@ public class GameController {
 
 
 
-
-
-
-
     static void crearTablero(){
         tablero = new Tablero(8, 8, numMinas);
         tablero.printTablero();
@@ -64,16 +59,14 @@ public class GameController {
                 for (Casilla casillaConMina : t){
                     buttons[casillaConMina.getNumFila()][casillaConMina.getNumColumna()].setText("*");
                 }
-                showMessage("Ha explotado una mina :(");
+                showMessage("Ha explotado una mina");
                 System.exit(0);
             }
         });
+
         tablero.setEventWinGame(new Consumer<List<Casilla>>() {
             @Override
             public void accept(List<Casilla> t) {
-                for (Casilla casillaConMina : t){
-                    buttons[casillaConMina.getNumFila()][casillaConMina.getNumColumna()].setText(":)");
-                }
                 showMessage("Felicidades, ha ganado :)");
                 System.exit(0);
             }
@@ -270,7 +263,7 @@ public class GameController {
 
     private static void sugerencias(){
         Random ranIndex = new Random();
-        if (jugadas==2){
+        if (jugadas==5){
             int index = ranIndex.nextInt(listaSegura.getLargo());
             pilaSugerencias.push(listaSegura.getNodoEnIndice(index-1).getCasilla());
             largoPila++;
