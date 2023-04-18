@@ -181,15 +181,9 @@ public class Tablero {
     public void marcarCasilla(int posFila, int posColumna){
         if (this.casillas[posFila][posColumna].isMina()){
             minasEncontradas++;
-            System.out.println(minasEncontradas);
             actualizarMinasMarcadas(minasEncontradas);
         }
     }
-
-
-
-
-
     boolean partidaGanada(){return numCasillasAbiertas >= (numFilas*numColumnas)-numMinas;
     }
 

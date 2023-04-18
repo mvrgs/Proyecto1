@@ -16,16 +16,8 @@ public class Casilla {
         return numFila;
     }
 
-    public void setNumFila(int numFila) {
-        this.numFila = numFila;
-    }
-
     public int getNumColumna() {
         return numColumna;
-    }
-
-    public void setNumColumna(int numColumna) {
-        this.numColumna = numColumna;
     }
 
     public boolean isMina() {
@@ -38,10 +30,6 @@ public class Casilla {
 
     public int getNumMinasAlrededor() {
         return numMinasAlrededor;
-    }
-
-    public void setNumMinasAlrededor(int numMinasAlrededor) {
-        this.numMinasAlrededor = numMinasAlrededor;
     }
 
     public void incrementarNumMinasAlrededor() {

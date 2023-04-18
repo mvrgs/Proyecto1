@@ -44,8 +44,10 @@ public class GameController {
     private static stack pilaSugerencias = new stack();
     static boolean turnoJugador =true;
     static boolean perdioComputadora = false;
-    private static int jugadas=0;
+    private static int jugadas = 0;
+    private static int largoPila;
     static int largo;
+    static Button sugerenciasButton;
 
 
 
@@ -97,11 +99,11 @@ public class GameController {
         labelMinas.textProperty().bind(minasMarcadas);
         labelMinas.setStyle("-fx-font-size: 37px;");
 
-        Button sugerenciasButton = new Button("S");
+        sugerenciasButton = new Button("0");
         sugerenciasButton.setPrefSize(40, 40);
         sugerenciasButton.setStyle("-fx-background-color: gray;");
         sugerenciasButton.setOnAction(actionEvent -> {
-            mostrarSugerencia();
+            crearSugerencias();
         });
 
         buttons = new Button[size][size];
@@ -122,17 +124,18 @@ public class GameController {
                 button.setId(row + "," + col);
 
                 button.setOnAction(actionEvent -> {
+                    jugadas++;
                     turnoJugador= false;
                     String[] coordenada = button.getId().split(",");
                     int posFila = Integer.parseInt(coordenada[0]);
                     int posColumna = Integer.parseInt(coordenada[1]);
                     tablero.selectCasilla(posFila, posColumna);
-
+                    System.out.println("Jugadas:"+jugadas);
+                    obtenerListaGeneral();
                     if (dificultad == "Dummy"){
                         dummy();
                     }
                     else{
-                        sugerencias();
                         advanced();
                     }
                 });
@@ -186,16 +189,14 @@ public class GameController {
                     largo++;
                 }
             }
-        }
+        }obtenerListas();
     }
-    static private void obtenerListas(){
+    /*static private void obtenerListas(){
         listaSegura = new linkedList();
         listaIncertidumbre = new linkedList();
-        int i = 0;
         while (listaGeneral.getLargo()>0){
             if (casillasConMinas.contains(listaGeneral.getPrimero().getCasilla())){
                 listaIncertidumbre.agregar(listaGeneral.getPrimero().getCasilla());
-                i++;
             }
             else {
                 listaSegura.agregar(listaGeneral.getPrimero().getCasilla());
@@ -206,32 +207,35 @@ public class GameController {
         System.out.println("segura:"+listaSegura.getLargo());
         System.out.println("incertidumbre:"+listaIncertidumbre.getLargo());
     }
-    static private void prueba(){
+     */
+    static private void obtenerListas(){
         listaSegura= new linkedList();
         listaIncertidumbre = new linkedList();
-        System.out.println("general:"+listaGeneral.getPrimero().getCasilla());
         while (listaGeneral.getLargo()>0){
             for (int i = 0; i < listaGeneral.getLargo(); i++) {
                 for (int j = 0; j < casillasConMinas.size(); j++) {
-                    System.out.println("conMina:"+casillasConMinas.get(j));
                     if (casillasConMinas.get(j).equals(listaGeneral.getPrimero().getCasilla())) {
                         Casilla casilla = listaGeneral.getPrimero().getCasilla();
                         listaIncertidumbre.agregar(casilla);
                         listaGeneral.eliminarPrimero();
+                        System.out.println("general:"+listaGeneral.getLargo());
+                        System.out.println("segura:"+listaSegura.getLargo());
+                        System.out.println("incertidumbre:"+listaIncertidumbre.getLargo());
                     }
                 }
                 Casilla casilla= listaGeneral.getPrimero().getCasilla();
                 listaSegura.agregar(casilla);
                 listaGeneral.eliminarPrimero();
+                System.out.println("general:"+listaGeneral.getLargo());
+                System.out.println("segura:"+listaSegura.getLargo());
+                System.out.println("incertidumbre:"+listaIncertidumbre.getLargo());
             }
         }
-        System.out.println("segura:"+listaSegura.getLargo());
-        System.out.println("incertidumbre:"+listaIncertidumbre.getLargo());
+        sugerencias();
     }
 
 
     static void advanced() {
-        obtenerListaGeneral();
         Random ranIndex = new Random();
         new Thread(() -> {
             try {
@@ -242,15 +246,21 @@ public class GameController {
             int index = ranIndex.nextInt(largo);
             int posFila;
             int posCol;
-            posFila= listaGeneral.getNodoEnIndice(index).getCasilla().getNumFila();
-            posCol = listaGeneral.getNodoEnIndice(index).getCasilla().getNumColumna();
-            Platform.runLater(() -> {
-                buttons[posFila][posCol].setStyle("-fx-background-color: blue;");
-                System.out.println("indice:"+index);
-                System.out.println("fila:"+posFila);
-                System.out.println("columna"+posCol);
-                tablero.selectCasilla(posFila,posCol);
-            });
+            if (listaSegura.getLargo()> 0){
+                posFila= listaSegura.getNodoEnIndice(index).getCasilla().getNumFila();
+                posCol = listaSegura.getNodoEnIndice(index).getCasilla().getNumColumna();
+                Platform.runLater(() -> {
+                    buttons[posFila][posCol].setStyle("-fx-background-color: blue;");
+                    tablero.selectCasilla(posFila,posCol);
+                });
+            }else {
+                posFila= listaIncertidumbre.getNodoEnIndice(index).getCasilla().getNumFila();
+                posCol = listaIncertidumbre.getNodoEnIndice(index).getCasilla().getNumColumna();
+                Platform.runLater(() -> {
+                    buttons[posFila][posCol].setStyle("-fx-background-color: blue;");
+                    tablero.selectCasilla(posFila,posCol);
+                });
+            }
         }).start();
 
         if (tablero.juegoTerminado){
@@ -260,17 +270,30 @@ public class GameController {
 
     private static void sugerencias(){
         Random ranIndex = new Random();
-        if (jugadas==5){
+        if (jugadas==2){
             int index = ranIndex.nextInt(listaSegura.getLargo());
             pilaSugerencias.push(listaSegura.getNodoEnIndice(index-1).getCasilla());
+            largoPila++;
             jugadas=0;
-        }
-        else {
-            jugadas++;
+            sugerenciasButton.setText(String.valueOf(largoPila));
         }
     }
-    private static void mostrarSugerencia(){
-        System.out.println("se muestra la sugerencia");
+
+    private static void crearSugerencias(){
+        int numFila;
+        int numCol;
+        if (largoPila > 0){
+            Casilla casilla = (Casilla) pilaSugerencias.peek();
+            numFila = casilla.getNumFila();
+            numCol = casilla.getNumColumna();
+            buttons[numFila][numCol].setStyle("-fx-background-color: green");
+            pilaSugerencias.pop();
+            largoPila--;
+            sugerenciasButton.setText(String.valueOf(largoPila));
+        }
+        else {
+            System.out.println("No hay sugerencias disponibles");
+        }
     }
 
     static void iniciarCronometro() {
