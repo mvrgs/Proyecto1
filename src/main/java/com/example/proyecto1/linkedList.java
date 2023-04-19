@@ -51,16 +51,13 @@ public class linkedList {
     }
     public void eliminarPrimero() {
         if (esVacia()) {
-            // Lista vacía, no hacer nada
             return;
         }
 
         if (largo == 1) {
-            // Si solo hay un nodo en la lista, eliminarlo y actualizar 'primero' y 'ultimo'
             primero = null;
             ultimo = null;
         } else {
-            // Actualizar 'primero' al siguiente nodo
             primero = primero.getSiguiente();
         }
 

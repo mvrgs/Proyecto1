@@ -38,7 +38,7 @@ public class Tablero {
         generarMinas();
     }
 
-    private void generarMinas() {
+    private void generarMinas() {/**Genera la cantidad de minas que se indiquen de manera aleatoria*/
         int minasGeneradas = 0;
         while (minasGeneradas != numMinas) {
             int tmpFila = (int) (Math.random() * casillas.length);
@@ -51,7 +51,7 @@ public class Tablero {
         actualizarNumMinasAlrededor();
     }
 
-    public void printTablero() {
+    public void printTablero() {/**Muestra el tablero generado en consola para control*/
         for (int i = 0; i < casillas.length; i++) {
             for (int j = 0; j < casillas[i].length; j++) {
                 System.out.print(casillas[i][j].isMina() ? "*" : "0");
@@ -69,7 +69,7 @@ public class Tablero {
         }
     }
 
-    private void actualizarNumMinasAlrededor() {
+    private void actualizarNumMinasAlrededor() {/**Incrementa el numero de minas alrededor luego de revisar el perimetro*/
         for (int i = 0; i < casillas.length; i++) {
             for (int j = 0; j < casillas[i].length; j++) {
                 if (casillas[i][j].isMina()) {
@@ -125,7 +125,7 @@ public class Tablero {
         return listaCasillas;
     }
 
-    List<Casilla> obtenerCasillasConMinas(){
+    List<Casilla> obtenerCasillasConMinas(){ /**Lista que contiene las casillas que se definieron anteriormente como que tendran mina*/
         casillasConMinas = new LinkedList<>();
         for (int i = 0; i < casillas.length; i++) {
             for (int j = 0; j < casillas[i].length; j++) {
@@ -154,13 +154,13 @@ public class Tablero {
      */
 
 
-    public void selectCasilla(int posFila, int posColumna){
+    public void selectCasilla(int posFila, int posColumna){/**Al seleccionar una casilla, si no esta abierta, se marca*/
         obtenerCasillasConMinas();
         eventCasillaAbierta.accept(this.casillas[posFila][posColumna]);
-        if (this.casillas[posFila][posColumna].isMina()){
+        if (this.casillas[posFila][posColumna].isMina()){/**Si la casilla seleccionada contiene mina, se acepta el evento de partida perdida para finalizar*/
             eventLoseGame.accept(obtenerCasillasConMinas());
             juegoTerminado = true;
-        } else if (this.casillas[posFila][posColumna].getNumMinasAlrededor()==0){
+        } else if (this.casillas[posFila][posColumna].getNumMinasAlrededor()==0){/**Si la casilla no tiene mina, abre la casilla y abre las casillas alrededor en caso de ser necesario por las pistas*/
             marcarCasillaAbierta(posFila, posColumna);
             List<Casilla> casillasAlrededor = obtenerCasillasAlrededor(posFila, posColumna);
             for (Casilla casilla: casillasAlrededor){
@@ -178,7 +178,7 @@ public class Tablero {
         }
     }
 
-    public void marcarCasilla(int posFila, int posColumna){
+    public void marcarCasilla(int posFila, int posColumna){/**Revisa si la casilla en la que se coloca la bandera tiene mina, para mostrarla en pantalla*/
         if (this.casillas[posFila][posColumna].isMina()){
             minasEncontradas++;
             actualizarMinasMarcadas(minasEncontradas);

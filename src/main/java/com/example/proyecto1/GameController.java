@@ -51,13 +51,13 @@ public class GameController {
 
 
     static void crearTablero(){
-        tablero = new Tablero(8, 8, numMinas);
-        tablero.printTablero();
+        tablero = new Tablero(8, 8, numMinas); /**Crea el tablero con las dimensiones solicitadas*/
+        tablero.printTablero();/**Llama al metodo que muestra el tablero generado en consola*/
         tablero.setEventLoseGame(new Consumer<List<Casilla>>() {
             @Override
             public void accept(List<Casilla> t) {
                 for (Casilla casillaConMina : t){
-                    buttons[casillaConMina.getNumFila()][casillaConMina.getNumColumna()].setText("*");
+                    buttons[casillaConMina.getNumFila()][casillaConMina.getNumColumna()].setText("*");/**Al finalizar el juego, se muestran todas la minas ubicadas en el tablero*/
                 }
                 showMessage("Ha explotado una mina");
                 System.exit(0);
@@ -76,6 +76,7 @@ public class GameController {
             public void accept(Casilla t) {
                 buttons[t.getNumFila()][t.getNumColumna()].setDisable(true);
                 buttons[t.getNumFila()][t.getNumColumna()].setText(t.getNumMinasAlrededor()==0 ? "": t.getNumMinasAlrededor() +"");
+                /**Al abrir una casilla, toma los valores de las minas alrededor para mostrarlos*/
             }
         });
 
@@ -86,10 +87,12 @@ public class GameController {
         Label labelCronometro = new Label();
 
         labelCronometro.textProperty().bind(Bindings.createStringBinding(() -> String.format("%02d:%02d", minutos.get(), segundos.get()), minutos, segundos));
+        /**Se le asigna el formato para que el cronometro sea de estilo reloj*/
         labelCronometro.setStyle("-fx-font-size: 37px;");
 
         Label labelMinas = new Label();
         labelMinas.textProperty().bind(minasMarcadas);
+        /**Constantemente se actualiza el dato de las casillas con mina que ya fueron marcadas para mostrarlas en el Label*/
         labelMinas.setStyle("-fx-font-size: 37px;");
 
         sugerenciasButton = new Button("0");
@@ -99,7 +102,7 @@ public class GameController {
             crearSugerencias();
         });
 
-        buttons = new Button[size][size];
+        buttons = new Button[size][size];/**Genera la matriz*/
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10));
         grid.setAlignment(Pos.CENTER);
@@ -122,7 +125,7 @@ public class GameController {
                     String[] coordenada = button.getId().split(",");
                     int posFila = Integer.parseInt(coordenada[0]);
                     int posColumna = Integer.parseInt(coordenada[1]);
-                    tablero.selectCasilla(posFila, posColumna);
+                    tablero.selectCasilla(posFila, posColumna); /**Toma la coordenada del boton presionado por el usuario para mandarlo al metodo selectCasilla para marcar la casilla*/
                     System.out.println("Jugadas:"+jugadas);
                     obtenerListaGeneral();
                     if (dificultad == "Dummy"){
@@ -133,10 +136,8 @@ public class GameController {
                     }
                 });
 
-                /**
-                 * Metodo que cambia el color del boton con el click derecho para marcar una posible mina"
-                 */
-                button.setOnContextMenuRequested(contextMenuEvent -> {
+
+                button.setOnContextMenuRequested(contextMenuEvent -> {/**Metodo que cambia el color del boton con el click derecho para marcar una posible mina"*/
                     button.setStyle("-fx-background-color: red;");
                     String[] coordenada = button.getId().split(",");
                     int posFila = Integer.parseInt(coordenada[0]);
@@ -153,6 +154,7 @@ public class GameController {
     }
 
     private static void dummy(){
+        /**Genera un numero random de fila y de columna para tener coordenadas de un boton de manera aleatoria*/
         Random ranFila = new Random();
         Random ranCol = new Random();
         new Thread(() -> {
@@ -174,7 +176,7 @@ public class GameController {
     static private void obtenerListaGeneral() {
         listaGeneral = new linkedList();
         largo = 0;
-        for (int i = 0; i < casillas.length; i++) {
+        for (int i = 0; i < casillas.length; i++) {/**Recorre el tablero y agrega unicamente a la lista las casillas que no han sido abiertas*/
             for (int j = 0; j < casillas[i].length; j++) {
                 if (!casillas[i][j].isAbierta()) {
                     Casilla casilla = new Casilla(i, j);
@@ -204,13 +206,13 @@ public class GameController {
     static private void obtenerListas(){
         listaSegura= new linkedList();
         listaIncertidumbre = new linkedList();
-        while (listaGeneral.getLargo()>0){
+        while (listaGeneral.getLargo()>0){/**Recorre la listaGeneral y compara cada casillas con las que estan en la lista casillasConMinas que se genera al crear un nuevo tablero*/
             for (int i = 0; i < listaGeneral.getLargo(); i++) {
                 for (int j = 0; j < casillasConMinas.size(); j++) {
                     if (casillasConMinas.get(j).equals(listaGeneral.getPrimero().getCasilla())) {
                         Casilla casilla = listaGeneral.getPrimero().getCasilla();
                         listaIncertidumbre.agregar(casilla);
-                        listaGeneral.eliminarPrimero();
+                        listaGeneral.eliminarPrimero();/**Elimina el valor que recien agrega hasta terminar con la listaGeneral*/
                         System.out.println("general:"+listaGeneral.getLargo());
                         System.out.println("segura:"+listaSegura.getLargo());
                         System.out.println("incertidumbre:"+listaIncertidumbre.getLargo());
@@ -236,7 +238,7 @@ public class GameController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            int index = ranIndex.nextInt(largo);
+            int index = ranIndex.nextInt(largo);/**Toma un numero aleatorio dentro del rango del largo de la listaSegura para elegir una casilla*/
             int posFila;
             int posCol;
             if (listaSegura.getLargo()> 0){
@@ -246,7 +248,7 @@ public class GameController {
                     buttons[posFila][posCol].setStyle("-fx-background-color: blue;");
                     tablero.selectCasilla(posFila,posCol);
                 });
-            }else {
+            }else {/**En caso de que la lista segura ya este vacia, se selecciona una casilla de la listaIncertidumbre para finalizar el juego*/
                 posFila= listaIncertidumbre.getNodoEnIndice(index).getCasilla().getNumFila();
                 posCol = listaIncertidumbre.getNodoEnIndice(index).getCasilla().getNumColumna();
                 Platform.runLater(() -> {
@@ -265,7 +267,7 @@ public class GameController {
         Random ranIndex = new Random();
         if (jugadas==5){
             int index = ranIndex.nextInt(listaSegura.getLargo());
-            pilaSugerencias.push(listaSegura.getNodoEnIndice(index-1).getCasilla());
+            pilaSugerencias.push(listaSegura.getNodoEnIndice(index-1).getCasilla());/**Agrega una casilla aleatoria de las que no se han abierto ni contienen mina*/
             largoPila++;
             jugadas=0;
             sugerenciasButton.setText(String.valueOf(largoPila));
@@ -275,7 +277,7 @@ public class GameController {
     private static void crearSugerencias(){
         int numFila;
         int numCol;
-        if (largoPila > 0){
+        if (largoPila > 0){/**toma la casilla con un peek() para marcarla de color verde en el tablero y luego hace un pop() para que ya no aparezca en la pila*/
             Casilla casilla = (Casilla) pilaSugerencias.peek();
             numFila = casilla.getNumFila();
             numCol = casilla.getNumColumna();
